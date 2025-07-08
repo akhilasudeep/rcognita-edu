@@ -240,6 +240,9 @@ class System:
         
         if self.ctrl_bnds.any():
             for k in range(self.dim_input):
+                action = action.copy()
+# action[k] = np.clip(action[k], self.ctrl_bnds[k, 0], self.ctrl_bnds[k, 1])
+
                 action[k] = np.clip(action[k], self.ctrl_bnds[k, 0], self.ctrl_bnds[k, 1])
         
         rhs_full_state[0:self.dim_state] = self._state_dyn(t, state, action, disturb)
@@ -271,12 +274,20 @@ class Sys3WRobotNI(System):
     
     def _state_dyn(self, t, state, action, disturb=[]):   
         Dstate = np.zeros(self.dim_state)
-        
+        # print(state,state.shape,action,action.shape)
 
-        #####################################################################################################
-        ############################# write down here math model of robot ###################################
-        #####################################################################################################    
-             
+
+
+        Dstate[0]=action[0]*np.cos(state[2])
+        Dstate[1]=action[0]*np.sin(state[2])
+        Dstate[2]=action[1]
+
+        if disturb:
+           Dstate += np.array(disturb)
+
+
+
+
         return Dstate    
  
     def _disturb_dyn(self, t, disturb):
@@ -295,4 +306,3 @@ class Sys3WRobotNI(System):
         observation = np.zeros(self.dim_output)
         observation = state
         return observation
-

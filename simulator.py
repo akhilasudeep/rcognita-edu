@@ -203,7 +203,6 @@ class Simulator:
     
     def reset(self):
         if self.sys_type == "diff_eqn":
-            # The only real way to reset the solver seems to be recreating it altogether
             self.ODE_solver = sp.integrate.RK45(self.closed_loop_rhs,
                                     self.t0,
                                     self.state_full_init,
@@ -213,12 +212,7 @@ class Simulator:
                                     atol=self.atol,
                                     rtol=self.rtol
                                     )
-            # self.ODE_solver.status = 'running'
-            # self.ODE_solver.t = self.t0
-            # # self.ODE_solver.observation = self.state_full_init
-            # # self.state_full = self.state_full_init
-            # self.ODE_solver.y = self.state_full_init
+
         else:
             self.t = self.t0
-            # self.state_full = self.state_full_init
             self.ODE_solver.y = self.state_full_init
